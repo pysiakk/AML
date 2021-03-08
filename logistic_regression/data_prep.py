@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.model_selection import train_test_split
 import numpy as np
 
 banknote = pd.read_csv("data/banknote.csv")
@@ -20,17 +20,27 @@ def drop_corr(X):
 
     
 banknote_drop = drop_corr(banknote)
-banknote_drop.to_csv("data/banknote_prep.csv")
+banknote_drop_train, banknote_drop_test = train_test_split(banknote_drop, test_size=0.33, random_state=123)
+banknote_drop_train.to_csv("data/banknote_train.csv")
+banknote_drop_test.to_csv("data/banknote_test.csv")
 
 diabetes_drop = drop_corr(diabetes)
-diabetes_drop.to_csv("data/banknote_prep.csv")
+diabetes_drop_train, diabetes_drop_test = train_test_split(diabetes_drop, test_size=0.33, random_state=123)
+diabetes_drop_train.to_csv("data/diabetes_train.csv")
+diabetes_drop_test.to_csv("data/diabetes_test.csv")
 
 madelon_drop = drop_corr(madelon)
-madelon_drop.to_csv("data/madelon_prep.csv")
+madelon_drop_train, madelon_drop_test = train_test_split(madelon_drop, test_size=0.33, random_state=123)
+madelon_drop_train.to_csv("data/madelon_train.csv")
+madelon_drop_test.to_csv("data/madelon_test.csv")
 
 ozone_drop = drop_corr(ozone)
-ozone_drop.to_csv("data/ozone_prep.csv")
+ozone_drop_train, ozone_drop_test = train_test_split(ozone_drop, test_size=0.33, random_state=123)
+ozone_drop_train.to_csv("data/ozone_train.csv")
+ozone_drop_test.to_csv("data/ozone_test.csv")
 
 steel_drop = drop_corr(steel)
-steel_drop.to_csv("data/steel_prep.csv")
+steel_drop_train, steel_drop_test = train_test_split(steel_drop, test_size=0.33, random_state=123)
+steel_drop_train.to_csv("data/steel_train.csv")
+steel_drop_test.to_csv("data/steel_test.csv")
 
