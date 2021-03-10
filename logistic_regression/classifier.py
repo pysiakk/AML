@@ -1,4 +1,4 @@
-from .stopper import Stopper
+from logistic_regression.stopper import Stopper
 import numpy as np
 
 
