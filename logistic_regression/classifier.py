@@ -1,4 +1,5 @@
 from logistic_regression.stopper import Stopper
+from logistic_regression.metric import Metric
 import numpy as np
 
 
@@ -21,6 +22,10 @@ class Classifier:
         y_pred = np.zeros(X.shape[0])
         y_pred[self._predict(X) > threshold] = 1
         return y_pred
+
+    def score(self, X, y_true, metric: Metric):
+        y_pred = self.predict(X)
+        return metric.evaluate(y_true, y_pred)
 
     def _train_iteration(self, X, y):
         p = self._predict(X)
