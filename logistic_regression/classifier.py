@@ -12,6 +12,10 @@ class Classifier:
         self.beta = np.zeros([X.shape[1], 1])
         while not self.stopper.stop():
             self._train_iteration(X, y)
+        return self
+
+    def predict_proba(self, X):
+        return self._predict(X)
 
     def _train_iteration(self, X, y):
         p = self._predict(X)
