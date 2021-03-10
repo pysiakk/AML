@@ -37,12 +37,17 @@ class IRLS(Classifier):
         return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y - p)
 
 
-
 class GeneralGradientDescent(Classifier):
 
     def __init__(self, batch_size: int, **kwargs):
         super(GeneralGradientDescent, self).__init__(**kwargs)
         self.batch_size: int = batch_size
+
+    def _shuffle(self, X, y):
+        if self.batch_size != -1:
+            s = np.arange(X.shape[0])
+            np.random.shuffle(s)
+            return X[s, :], y[s]
 
 
 class GD(GeneralGradientDescent):
