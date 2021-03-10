@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
 
+# TODO add intercept in all data
+
 banknote = pd.read_csv("data/banknote.csv")
 diabetes = pd.read_csv("data/diabetes.csv")
 madelon = pd.read_csv("data/madelon.csv")

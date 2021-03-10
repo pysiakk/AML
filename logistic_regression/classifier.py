@@ -9,7 +9,7 @@ class Classifier:
 
     def train(self, X, y):
         y = y.reshape(-1, 1)
-        self.beta = np.ones([X.shape[1], 1])
+        self.beta = np.zeros([X.shape[1], 1])
         while not self.stopper.stop():
             self._train_iteration(X, y)
 
@@ -34,6 +34,7 @@ class IRLS(Classifier):
         super().__init__(**kwargs)
 
     def _compute_derivative(self, X, y, p):
+        # TODO regularization on diagonal in W
         W = np.diag([x*(1-x) for x in p.reshape(-1)])
         return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
 
