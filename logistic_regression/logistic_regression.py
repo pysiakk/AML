@@ -10,12 +10,12 @@ class Classifier:
     def train(self, X, y):
         self.beta = np.ones([X.shape[1], 1])
         while not self.stopper.stop():
-            self._train_iteration()
+            self._train_iteration(X, y)
 
-    def _train_iteration(self):
-        self.beta += self._compute_derivative()
+    def _train_iteration(self, X, y):
+        self.beta += self._compute_derivative(X, y)
 
-    def _compute_derivative(self):
+    def _compute_derivative(self, X, y):
         pass
 
     def _predict(self, X):
