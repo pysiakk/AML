@@ -17,6 +17,11 @@ class Classifier:
     def predict_proba(self, X):
         return self._predict(X)
 
+    def predict(self, X, threshold=0.5):
+        y_pred = np.zeros(X.shape[0])
+        y_pred[self._predict(X) > threshold] = 1
+        return y_pred
+
     def _train_iteration(self, X, y):
         p = self._predict(X)
         self.beta += self._compute_derivative(X, y, p)
