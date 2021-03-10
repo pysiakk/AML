@@ -13,8 +13,8 @@ class Classifier:
             self._train_iteration(X, y)
 
     def _train_iteration(self, X, y):
-        self.beta += self._compute_derivative(X, y)
         self.p = self._predict(X)
+        self.beta += self._compute_derivative(X, y, self.p)
 
     def _compute_derivative(self, X, y, p):
         pass
@@ -24,6 +24,8 @@ class Classifier:
         :param X: matrix with observations: n_observations x n_predictors
         :return: predictions as np.array n_observations x 1
         """
+        print(X)
+        print(self.beta)
         return 1 / (1 + np.exp(-X @ self.beta))
 
 
@@ -33,8 +35,10 @@ class IRLS(Classifier):
         super().__init__(**kwargs)
 
     def _compute_derivative(self, X, y, p):
-        W = np.diag([x*(1-x) for x in p])
-        return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y - p)
+        W = np.diag([x*(1-x) for x in p.reshape(-1)])
+        print((np.linalg.inv(X.transpose() @ W @ X) @ X.transpose()).shape)
+        print((y.reshape(-1) - p.reshape(-1)).shape)
+        return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
 
 
 class GeneralGradientDescent(Classifier):
