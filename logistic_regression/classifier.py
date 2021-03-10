@@ -8,13 +8,14 @@ class Classifier:
         self.beta = None
 
     def train(self, X, y):
+        y = y.reshape(-1, 1)
         self.beta = np.ones([X.shape[1], 1])
         while not self.stopper.stop():
             self._train_iteration(X, y)
 
     def _train_iteration(self, X, y):
-        self.p = self._predict(X)
-        self.beta += self._compute_derivative(X, y, self.p)
+        p = self._predict(X)
+        self.beta += self._compute_derivative(X, y, p)
 
     def _compute_derivative(self, X, y, p):
         pass
@@ -24,8 +25,6 @@ class Classifier:
         :param X: matrix with observations: n_observations x n_predictors
         :return: predictions as np.array n_observations x 1
         """
-        print(X)
-        print(self.beta)
         return 1 / (1 + np.exp(-X @ self.beta))
 
 
@@ -36,8 +35,6 @@ class IRLS(Classifier):
 
     def _compute_derivative(self, X, y, p):
         W = np.diag([x*(1-x) for x in p.reshape(-1)])
-        print((np.linalg.inv(X.transpose() @ W @ X) @ X.transpose()).shape)
-        print((y.reshape(-1) - p.reshape(-1)).shape)
         return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
 
 
@@ -53,6 +50,7 @@ class GeneralGradientDescent(Classifier):
             s = np.arange(X.shape[0])
             np.random.shuffle(s)
             return X[s, :], y[s], p[s]
+        return X, y, p
 
     def _get_batch_data(self, X, y, p):
         if self.batch_size != -1:
@@ -64,7 +62,7 @@ class GeneralGradientDescent(Classifier):
     def _compute_derivative(self, X, y, p):
         X, y, p = self._shuffle(X, y, p)
         X, y, p = self._get_batch_data(X, y, p)
-        return - self.learning_rate / X.shape[0] * ((p - y).T @ X)
+        return - self.learning_rate / X.shape[0] * (X.T @ (p - y))
 
 
 class GD(GeneralGradientDescent):
