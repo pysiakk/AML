@@ -43,15 +43,28 @@ class IRLS(Classifier):
 
 class GeneralGradientDescent(Classifier):
 
-    def __init__(self, batch_size: int, **kwargs):
+    def __init__(self, batch_size: int, learning_rate: float = 0.01, **kwargs):
         super(GeneralGradientDescent, self).__init__(**kwargs)
         self.batch_size: int = batch_size
+        self.learning_rate: float = 0.01
 
-    def _shuffle(self, X, y):
+    def _shuffle(self, X, y, p):
         if self.batch_size != -1:
             s = np.arange(X.shape[0])
             np.random.shuffle(s)
-            return X[s, :], y[s]
+            return X[s, :], y[s], p[s]
+
+    def _get_batch_data(self, X, y, p):
+        if self.batch_size != -1:
+            X = X[:self.batch_size, :]
+            y = y[:self.batch_size]
+            p = p[:self.batch_size]
+        return X, y, p
+
+    def _compute_derivative(self, X, y, p):
+        X, y, p = self._shuffle(X, y, p)
+        X, y, p = self._get_batch_data(X, y, p)
+        return - self.learning_rate / X.shape[0] * ((p - y).T @ X)
 
 
 class GD(GeneralGradientDescent):
