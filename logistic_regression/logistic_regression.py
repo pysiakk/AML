@@ -8,7 +8,7 @@ class Classifier:
         self.beta = None
 
     def train(self, X, y):
-        self.beta = np.ones(X.shape[1])
+        self.beta = np.ones([X.shape[1], 1])
         while not self.stopper.stop():
             self._train_iteration()
 
@@ -17,6 +17,13 @@ class Classifier:
 
     def _compute_derivative(self):
         pass
+
+    def _predict(self, X):
+        """
+        :param X: matrix with observations: n_observations x n_predictors
+        :return: predictions as np.array n_observations x 1
+        """
+        return 1 / (1 + np.exp(-X @ self.beta))
 
 
 class IRLS(Classifier):
