@@ -16,11 +16,11 @@ class Classifier:
         return self
 
     def predict_proba(self, X):
-        return self._predict(X)
+        return self._predict(X).reshape(-1)
 
     def predict(self, X, threshold=0.5):
         y_pred = np.zeros(X.shape[0])
-        y_pred[self._predict(X) > threshold] = 1
+        y_pred[self._predict(X).reshape(-1) > threshold] = 1
         return y_pred
 
     def score(self, X, y_true, metric: Metric):
