@@ -4,11 +4,14 @@ import numpy as np
 
 
 class Classifier:
-    def __init__(self, **kwargs):
+    def __init__(self, intercept=True, **kwargs):
         self.stopper = Stopper(**kwargs)
         self.beta = None
+        self.intercept = intercept
 
     def train(self, X, y):
+        if self.intercept:
+            X = np.hstack((np.ones((X.shape[0], 1)), X))
         y = y.reshape(-1, 1)
         self.beta = np.zeros([X.shape[1], 1])
         while not self.stopper.stop():
@@ -16,9 +19,13 @@ class Classifier:
         return self
 
     def predict_proba(self, X):
+        if self.intercept:
+            X = np.hstack((np.ones((X.shape[0], 1)), X))
         return self._predict(X).reshape(-1)
 
     def predict(self, X, threshold=0.5):
+        if self.intercept:
+            X = np.hstack((np.ones((X.shape[0], 1)), X))
         y_pred = np.zeros(X.shape[0])
         y_pred[self._predict(X).reshape(-1) > threshold] = 1
         return y_pred
@@ -44,12 +51,13 @@ class Classifier:
 
 class IRLS(Classifier):
 
-    def __init__(self, **kwargs):
+    def __init__(self, eps=0, **kwargs):
         super().__init__(**kwargs)
+        self.eps = eps
 
     def _compute_derivative(self, X, y, p):
         # TODO regularization on diagonal in W
-        W = np.diag([x*(1-x) for x in p.reshape(-1)])
+        W = np.diag([x*(1-x) + self.eps for x in p.reshape(-1)])
         return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
 
 

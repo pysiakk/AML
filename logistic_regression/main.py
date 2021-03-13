@@ -6,18 +6,44 @@ import numpy as np
 
 # TODO use simple data with known beta, eg lab3/task3
 
+
+def gen_data(b0, b1, b2, n):
+    x = []
+    y = []
+    for i in range(n):
+        x1 = np.random.normal(0, 1)
+        x2 = np.random.normal(0, 1)
+        x.append([x1, x2])
+        p = 1/(1 + np.exp(-(b0 + b1*x1 + b2*x2)))
+        y.append(1 if np.random.uniform(0, 1) < p else 0)
+    x = np.array(x)
+    y = np.array(y)
+    return x, y
+
+
+def test_data(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+
+    irls = IRLS(max_iter=100, eps=0).train(X_train, y_train)
+    print(f'IRLS accuracy: {irls.score(X_test, y_test, Metric.Acc)} and beta: {irls.beta}')
+
+    gd = GD(learning_rate=0.01).train(X_train, y_train)
+    print(f'GD accuracy: {gd.score(X_test, y_test, Metric.Acc)} and beta: {gd.beta}')
+
+    sgd = SGD(learning_rate=0.01).train(X_train, y_train)
+    print(f'SGD accuracy: {sgd.score(X_test, y_test, Metric.Acc)} and beta: {sgd.beta}')
+
+
 iris = load_iris()
 X = np.array(iris.data)
 y = np.array(iris.target)
 y[y == 2] = 1
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+print("\nIris:\n\n")
+test_data(X, y)
 
-irls = IRLS(max_iter=100).train(X_train, y_train)
-print(f'IRLS accuracy: {irls.score(X_test, y_test, Metric.Acc)} and beta: {irls.beta}')
 
-gd = GD(learning_rate=0.01).train(X_train, y_train)
-print(f'GD accuracy: {gd.score(X_test, y_test, Metric.Acc)} and beta: {gd.beta}')
+X, y = gen_data(0.5, 1, -2, 1000)
 
-sgd = SGD(learning_rate=0.01).train(X_train, y_train)
-print(f'SGD accuracy: {sgd.score(X_test, y_test, Metric.Acc)} and beta: {sgd.beta}')
+print("\nSyntetic(0.5, 1, -2):\n\n")
+test_data(X, y)
