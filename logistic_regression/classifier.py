@@ -8,6 +8,7 @@ class Classifier:
         self.stopper = Stopper(**kwargs)
         self.beta = None
         self.intercept = intercept
+        self.log_likelihood = []
 
     def train(self, X, y):
         if self.intercept:
@@ -16,6 +17,8 @@ class Classifier:
         self.beta = np.zeros([X.shape[1], 1])
         while not self.stopper.stop():
             self._train_iteration(X, y)
+            y_pred_proba = self._predict(X)
+            self.log_likelihood.append(self._log_likelihood(y, y_pred_proba))
         return self
 
     def predict_proba(self, X):
@@ -48,6 +51,10 @@ class Classifier:
         """
         return 1 / (1 + np.exp(-X @ self.beta))
 
+    @staticmethod
+    def _log_likelihood(y_true, y_pred_proba):
+        return (np.log(y_pred_proba).transpose() @ y_true + np.log(1 - y_pred_proba).transpose() @ (1 - y_true))[0, 0]
+
 
 class IRLS(Classifier):
 
@@ -56,7 +63,6 @@ class IRLS(Classifier):
         self.eps = eps
 
     def _compute_derivative(self, X, y, p):
-        # TODO regularization on diagonal in W
         W = np.diag([x*(1-x) + self.eps for x in p.reshape(-1)])
         return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
 
