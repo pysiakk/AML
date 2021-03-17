@@ -4,8 +4,8 @@ import numpy as np
 
 
 class Classifier:
-    def __init__(self, intercept=True, **kwargs):
-        self.stopper = Stopper(**kwargs)
+    def __init__(self, intercept=True, stop_condition=None, **kwargs):
+        self.stopper = Stopper(stop_condition=stop_condition, **kwargs)
         self.beta = None
         self.intercept = intercept
         self.log_likelihood = []
@@ -15,7 +15,7 @@ class Classifier:
             X = np.hstack((np.ones((X.shape[0], 1)), X))
         y = y.reshape(-1, 1)
         self.beta = np.zeros([X.shape[1], 1])
-        while not self.stopper.stop():
+        while not self.stopper.stop(self):
             self._train_iteration(X, y)
             y_pred_proba = self._predict(X)
             self.log_likelihood.append(self._log_likelihood(y, y_pred_proba))

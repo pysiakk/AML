@@ -4,6 +4,7 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
+from logistic_regression.stopper import StopCondition
 
 
 def gen_data(b0, b1, b2, n):
@@ -20,16 +21,16 @@ def gen_data(b0, b1, b2, n):
     return x, y
 
 
-def test_data(X, y):
+def test_data(X, y, max_iter):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
 
-    irls = IRLS(max_iter=100, eps=0.0001).train(X_train, y_train)
+    irls = IRLS(max_iter=max_iter, eps=0.0001).train(X_train, y_train)
     print(f'IRLS accuracy: {irls.score(X_test, y_test, Metric.Acc)} and beta: {irls.beta}')
 
-    gd = GD(max_iter=100, learning_rate=0.01).train(X_train, y_train)
+    gd = GD(max_iter=max_iter, learning_rate=0.01).train(X_train, y_train)
     print(f'GD accuracy: {gd.score(X_test, y_test, Metric.Acc)} and beta: {gd.beta}')
 
-    sgd = SGD(max_iter=100, learning_rate=0.01).train(X_train, y_train)
+    sgd = SGD(max_iter=max_iter, learning_rate=0.01).train(X_train, y_train)
     print(f'SGD accuracy: {sgd.score(X_test, y_test, Metric.Acc)} and beta: {sgd.beta}')
 
     # ploting log-likelihood
@@ -50,18 +51,16 @@ y = np.array(iris.target)
 y[y == 2] = 1
 
 print("\n\nIris:\n")
-test_data(X, y)
+test_data(X, y, max_iter=1000)
 
 
 X, y = gen_data(0.5, 1, -2, 1000)
 
 print("\n\nSyntetic(0.5, 1, -2):\n")
-test_data(X, y)
+test_data(X, y, max_iter=1000)
 
 # X, y = gen_data(0.5, 1, -2, 1000)
-#
-# gd = GD(learning_rate=0.01).train(X, y)
-# print(gd.log_likelihood)
-# plt.plot(gd.log_likelihood)
+# gd = GD(max_iter=10000000000, learning_rate=0.01, stop_condition=StopCondition.LogLikelihood, max_iter_no_imp=10).train(X, y)
+# plt.plot(gd.log_likelihood, label="GD")
+# plt.legend()
 # plt.show()
-
