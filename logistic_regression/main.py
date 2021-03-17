@@ -48,7 +48,7 @@ def log_likelihood(y, pred):
 def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
 
     for learning_rate in learning_rates:
-        model = classifier(learning_rate=learning_rate).train(X, y)
+        model = classifier(learning_rate=learning_rate, **kwargs).train(X, y)
         plt.plot(model.log_likelihood, label=str(learning_rate))
     plt.title(classifier.__name__)
     plt.legend()
@@ -77,5 +77,5 @@ def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
 # plt.show()
 
 X, y = gen_data(0.5, 1, -2, 1000)
-test_learning_rate(X, y, GD, [1/(10**i) for i in range(1, 10)])
-test_learning_rate(X, y, SGD, [1/(10**i) for i in range(1, 10)])
+test_learning_rate(X, y, GD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=10000)
+test_learning_rate(X, y, SGD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=10000)

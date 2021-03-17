@@ -96,17 +96,17 @@ class GeneralGradientDescent(Classifier):
 class GD(GeneralGradientDescent):
 
     def __init__(self, **kwargs):
-        super().__init__(-1, **kwargs)
+        super().__init__(batch_size=-1, **kwargs)
 
 
 class SGD(GeneralGradientDescent):
 
     def __init__(self, **kwargs):
-        super().__init__(1, **kwargs)
+        super().__init__(batch_size=-1, **kwargs)
 
 
 class MiniBatchGD(GeneralGradientDescent):
 
     def __init__(self, **kwargs):
-        super().__init__(32, **kwargs)
+        super().__init__(batch_size=-32, **kwargs)
 
