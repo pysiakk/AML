@@ -53,7 +53,7 @@ class Classifier:
 
     @staticmethod
     def _log_likelihood(y_true, y_pred_proba):
-        return (np.log(y_pred_proba).transpose() @ y_true + np.log(1 - y_pred_proba).transpose() @ (1 - y_true))[0, 0]
+        return (np.log(y_pred_proba).T @ y_true + np.log(1 - y_pred_proba).T @ (1 - y_true))[0, 0]
 
 
 class IRLS(Classifier):
@@ -64,7 +64,7 @@ class IRLS(Classifier):
 
     def _compute_derivative(self, X, y, p):
         W = np.diag([x*(1-x) + self.eps for x in p.reshape(-1)])
-        return np.linalg.inv(X.transpose() @ W @ X) @ X.transpose() @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
+        return np.linalg.inv(X.T @ W @ X) @ X.T @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
 
 
 class GeneralGradientDescent(Classifier):
@@ -72,7 +72,7 @@ class GeneralGradientDescent(Classifier):
     def __init__(self, batch_size: int, learning_rate: float = 0.01, **kwargs):
         super(GeneralGradientDescent, self).__init__(**kwargs)
         self.batch_size: int = batch_size
-        self.learning_rate: float = 0.01
+        self.learning_rate: float = learning_rate
 
     @staticmethod
     def _shuffle(X, y, p):

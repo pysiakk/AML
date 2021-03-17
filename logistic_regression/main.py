@@ -45,22 +45,37 @@ def log_likelihood(y, pred):
     return np.log(pred) @ y.transpose() + np.log(1 - pred) @ (1 - y).transpose()
 
 
-iris = load_iris()
-X = np.array(iris.data)
-y = np.array(iris.target)
-y[y == 2] = 1
+def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
 
-print("\n\nIris:\n")
-test_data(X, y, max_iter=1000)
+    for learning_rate in learning_rates:
+        model = classifier(learning_rate=learning_rate).train(X, y)
+        plt.plot(model.log_likelihood, label=str(learning_rate))
+    plt.title(classifier.__name__)
+    plt.legend()
+    plt.show()
 
 
-X, y = gen_data(0.5, 1, -2, 1000)
 
-print("\n\nSyntetic(0.5, 1, -2):\n")
-test_data(X, y, max_iter=1000)
+# iris = load_iris()
+# X = np.array(iris.data)
+# y = np.array(iris.target)
+# y[y == 2] = 1
+#
+# print("\n\nIris:\n")
+# test_data(X, y, max_iter=1000)
+
+
+# X, y = gen_data(0.5, 1, -2, 1000)
+#
+# print("\n\nSyntetic(0.5, 1, -2):\n")
+# test_data(X, y, max_iter=1000)
 
 # X, y = gen_data(0.5, 1, -2, 1000)
 # gd = GD(max_iter=10000000000, learning_rate=0.01, stop_condition=StopCondition.LogLikelihood, max_iter_no_imp=10).train(X, y)
 # plt.plot(gd.log_likelihood, label="GD")
 # plt.legend()
 # plt.show()
+
+X, y = gen_data(0.5, 1, -2, 1000)
+test_learning_rate(X, y, GD, [1/(10**i) for i in range(1, 10)])
+test_learning_rate(X, y, SGD, [1/(10**i) for i in range(1, 10)])
