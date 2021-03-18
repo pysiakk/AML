@@ -43,17 +43,36 @@ def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
     for learning_rate in learning_rates:
         model = classifier(learning_rate=learning_rate, **kwargs).train(X, y)
         plt.plot(model.log_likelihood, label=str(learning_rate))
-    plt.title(f"Convergence of {classifier.__name__}")
-    plt.xlabel("Learning rate")
+    plt.title(f"Learning rates in {classifier.__name__}")
+    plt.xlabel("Iteration number")
     plt.ylabel("Log likelihood")
     plt.legend()
-    plt.show()
 
 
+def test_IRLS_regularization(X, y, epsilons, **kwargs):
+    for eps in epsilons:
+        model = IRLS(eps=eps, **kwargs).train(X, y)
+        plt.plot(model.log_likelihood[0:], label=str(eps))
+    plt.title(f"Regularization param in IRLS")
+    plt.xlabel("Iteration number")
+    plt.ylabel("Log likelihood")
+    plt.legend()
+
+
+plt.subplots(2, 2)
 X, y = gen_data(0.5, 1, -2, 1000)
-learning_rates = ([0.02, 0.05] + [1/(10**i) for i in range(1, 5)])
+learning_rates = ([0.02, 0.05] + [1/(10**i) for i in range(1, 4)])
 learning_rates.sort(reverse=True)
 max_iter = 2000
+plt.subplot(2, 2, 1)
 test_learning_rate(X, y, GD, learning_rates, max_iter=max_iter)
+plt.subplot(2, 2, 2)
 test_learning_rate(X, y, SGD, learning_rates, max_iter=max_iter)
+plt.subplot(2, 2, 3)
 test_learning_rate(X, y, MiniBatchGD, learning_rates, max_iter=max_iter)
+
+max_iter = 20
+epsilons = [1/10**i for i in range(1, 6)]
+plt.subplot(2, 2, 4)
+test_IRLS_regularization(X, y, epsilons, max_iter=max_iter)
+plt.show()
