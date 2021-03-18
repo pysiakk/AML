@@ -58,7 +58,7 @@ class Classifier:
 
 class IRLS(Classifier):
 
-    def __init__(self, eps=0, **kwargs):
+    def __init__(self, eps=0.001, **kwargs):
         super().__init__(**kwargs)
         self.eps = eps
 
@@ -69,7 +69,7 @@ class IRLS(Classifier):
 
 class GeneralGradientDescent(Classifier):
 
-    def __init__(self, batch_size: int, learning_rate: float = 0.01, **kwargs):
+    def __init__(self, batch_size: int, learning_rate: float = 0.05, **kwargs):
         super(GeneralGradientDescent, self).__init__(**kwargs)
         self.batch_size: int = batch_size
         self.learning_rate: float = learning_rate
