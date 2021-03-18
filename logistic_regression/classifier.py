@@ -10,7 +10,7 @@ class Classifier:
         self.intercept = intercept
         self.log_likelihood = []
 
-    def train(self, X, y):
+    def fit(self, X, y):
         if self.intercept:
             X = np.hstack((np.ones((X.shape[0], 1)), X))
         y = y.reshape(-1, 1)

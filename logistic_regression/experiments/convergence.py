@@ -23,13 +23,13 @@ def gen_data(b0, b1, b2, n):
 def test_data(X, y, max_iter):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
 
-    irls = IRLS(max_iter=max_iter, eps=0.0001).train(X_train, y_train)
+    irls = IRLS(max_iter=max_iter, eps=0.0001).fit(X_train, y_train)
     print(f'IRLS accuracy: {irls.score(X_test, y_test, Metric.Acc)} and beta: {irls.beta}')
 
-    gd = GD(max_iter=max_iter, learning_rate=0.01).train(X_train, y_train)
+    gd = GD(max_iter=max_iter, learning_rate=0.01).fit(X_train, y_train)
     print(f'GD accuracy: {gd.score(X_test, y_test, Metric.Acc)} and beta: {gd.beta}')
 
-    sgd = SGD(max_iter=max_iter, learning_rate=0.01).train(X_train, y_train)
+    sgd = SGD(max_iter=max_iter, learning_rate=0.01).fit(X_train, y_train)
     print(f'SGD accuracy: {sgd.score(X_test, y_test, Metric.Acc)} and beta: {sgd.beta}')
 
     # ploting log-likelihood
@@ -42,7 +42,7 @@ def test_data(X, y, max_iter):
 
 def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
     for learning_rate in learning_rates:
-        model = classifier(learning_rate=learning_rate, **kwargs).train(X, y)
+        model = classifier(learning_rate=learning_rate, **kwargs).fit(X, y)
         plt.plot(model.log_likelihood, label=str(learning_rate))
     plt.title(f"Learning rates in {classifier.__name__}")
     plt.xlabel("Iteration number")
@@ -52,7 +52,7 @@ def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
 
 def test_IRLS_regularization(X, y, epsilons, **kwargs):
     for eps in epsilons:
-        model = IRLS(eps=eps, **kwargs).train(X, y)
+        model = IRLS(eps=eps, **kwargs).fit(X, y)
         plt.plot(model.log_likelihood[0:], label=str(eps))
     plt.title(f"Regularization param in IRLS")
     plt.xlabel("Iteration number")
