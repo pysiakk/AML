@@ -102,11 +102,11 @@ class GD(GeneralGradientDescent):
 class SGD(GeneralGradientDescent):
 
     def __init__(self, **kwargs):
-        super().__init__(batch_size=-1, **kwargs)
+        super().__init__(batch_size=1, **kwargs)
 
 
 class MiniBatchGD(GeneralGradientDescent):
 
     def __init__(self, **kwargs):
-        super().__init__(batch_size=-32, **kwargs)
+        super().__init__(batch_size=32, **kwargs)
 

@@ -1,4 +1,4 @@
-from logistic_regression.classifier import IRLS, SGD, GD
+from logistic_regression.classifier import IRLS, SGD, GD, MiniBatchGD
 from logistic_regression.metric import Metric
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
@@ -55,27 +55,7 @@ def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
     plt.show()
 
 
-
-# iris = load_iris()
-# X = np.array(iris.data)
-# y = np.array(iris.target)
-# y[y == 2] = 1
-#
-# print("\n\nIris:\n")
-# test_data(X, y, max_iter=1000)
-
-
-# X, y = gen_data(0.5, 1, -2, 1000)
-#
-# print("\n\nSyntetic(0.5, 1, -2):\n")
-# test_data(X, y, max_iter=1000)
-
-# X, y = gen_data(0.5, 1, -2, 1000)
-# gd = GD(max_iter=10000000000, learning_rate=0.01, stop_condition=StopCondition.LogLikelihood, max_iter_no_imp=10).train(X, y)
-# plt.plot(gd.log_likelihood, label="GD")
-# plt.legend()
-# plt.show()
-
 X, y = gen_data(0.5, 1, -2, 1000)
-test_learning_rate(X, y, GD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=10000)
-test_learning_rate(X, y, SGD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=10000)
+test_learning_rate(X, y, GD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=2000)
+test_learning_rate(X, y, SGD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=2000)
+test_learning_rate(X, y, MiniBatchGD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=2000)
