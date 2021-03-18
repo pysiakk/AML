@@ -1,10 +1,8 @@
 from logistic_regression.classifier import IRLS, SGD, GD, MiniBatchGD
 from logistic_regression.metric import Metric
-from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
-from logistic_regression.stopper import StopCondition
 
 
 def gen_data(b0, b1, b2, n):
@@ -41,21 +39,21 @@ def test_data(X, y, max_iter):
     plt.show()
 
 
-def log_likelihood(y, pred):
-    return np.log(pred) @ y.transpose() + np.log(1 - pred) @ (1 - y).transpose()
-
-
 def test_learning_rate(X, y, classifier, learning_rates, **kwargs):
-
     for learning_rate in learning_rates:
         model = classifier(learning_rate=learning_rate, **kwargs).train(X, y)
         plt.plot(model.log_likelihood, label=str(learning_rate))
-    plt.title(classifier.__name__)
+    plt.title(f"Convergence of {classifier.__name__}")
+    plt.xlabel("Learning rate")
+    plt.ylabel("Log likelihood")
     plt.legend()
     plt.show()
 
 
 X, y = gen_data(0.5, 1, -2, 1000)
-test_learning_rate(X, y, GD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=2000)
-test_learning_rate(X, y, SGD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=2000)
-test_learning_rate(X, y, MiniBatchGD, [0.02, 0.05] + [1/(10**i) for i in range(1, 5)], max_iter=2000)
+learning_rates = ([0.02, 0.05] + [1/(10**i) for i in range(1, 5)])
+learning_rates.sort(reverse=True)
+max_iter = 2000
+test_learning_rate(X, y, GD, learning_rates, max_iter=max_iter)
+test_learning_rate(X, y, SGD, learning_rates, max_iter=max_iter)
+test_learning_rate(X, y, MiniBatchGD, learning_rates, max_iter=max_iter)
