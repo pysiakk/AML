@@ -3,6 +3,7 @@ from logistic_regression.metric import Metric
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
+from logistic_regression.stopper import StopCondition
 
 
 def gen_data(b0, b1, b2, n):
@@ -75,4 +76,25 @@ max_iter = 20
 epsilons = [1/10**i for i in range(1, 6)]
 plt.subplot(2, 2, 4)
 test_IRLS_regularization(X, y, epsilons, max_iter=max_iter)
+plt.show()
+
+
+# check results with stop condition
+
+plt.subplots(2, 2)
+X, y = gen_data(0.5, 1, -2, 1000)
+learning_rates = ([0.02, 0.05] + [1/(10**i) for i in range(1, 4)])
+learning_rates.sort(reverse=True)
+max_iter = 2000
+plt.subplot(2, 2, 1)
+test_learning_rate(X, y, GD, learning_rates, max_iter=max_iter, stop_condition=StopCondition.WorseThanWorst, max_iter_no_imp=100)
+plt.subplot(2, 2, 2)
+test_learning_rate(X, y, SGD, learning_rates, max_iter=max_iter, stop_condition=StopCondition.WorseThanWorst, max_iter_no_imp=100)
+plt.subplot(2, 2, 3)
+test_learning_rate(X, y, MiniBatchGD, learning_rates, max_iter=max_iter, stop_condition=StopCondition.WorseThanWorst, max_iter_no_imp=100)
+
+max_iter = 20
+epsilons = [1/10**i for i in range(1, 6)]
+plt.subplot(2, 2, 4)
+test_IRLS_regularization(X, y, epsilons, max_iter=max_iter, stop_condition=StopCondition.WorseThanWorst, max_iter_no_imp=100)
 plt.show()
