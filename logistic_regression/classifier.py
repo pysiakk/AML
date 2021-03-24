@@ -5,10 +5,12 @@ import numpy as np
 
 class Classifier:
     def __init__(self, intercept=True, stop_condition=None, **kwargs):
+        self.stop_condition = stop_condition
         self.stopper = Stopper(stop_condition=stop_condition, **kwargs)
         self.beta = None
         self.intercept = intercept
         self.log_likelihood = []
+        self.kwargs = kwargs
 
     def fit(self, X, y):
         if self.intercept:
@@ -18,7 +20,7 @@ class Classifier:
         while not self.stopper.stop(self):
             self._train_iteration(X, y)
             y_pred_proba = self._predict(X)
-            self.log_likelihood.append(self._log_likelihood(y, y_pred_proba))
+            self.log_likelihood.append(Metric.LogLikelihood.evaluate(y, y_pred_proba))
         return self
 
     def predict_proba(self, X):
@@ -34,8 +36,8 @@ class Classifier:
         return y_pred
 
     def score(self, X, y_true, metric: Metric):
-        y_pred = self.predict(X)
-        return metric.evaluate(y_true, y_pred)
+        y_pred_proba = self._predict(X)
+        return metric.evaluate(y_true, y_pred_proba, self)
 
     def _train_iteration(self, X, y):
         p = self._predict(X)
@@ -50,10 +52,6 @@ class Classifier:
         :return: predictions as np.array n_observations x 1
         """
         return 1 / (1 + np.exp(-X @ self.beta))
-
-    @staticmethod
-    def _log_likelihood(y_true, y_pred_proba):
-        return (np.log(y_pred_proba).T @ y_true + np.log(1 - y_pred_proba).T @ (1 - y_true))[0, 0]
 
 
 class IRLS(Classifier):
