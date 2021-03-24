@@ -39,9 +39,7 @@ class Classifier:
         return y_pred
 
     def score(self, X, y_true, metric: Metric):
-        if self.intercept:
-            X = np.hstack((np.ones((X.shape[0], 1)), X))
-        y_pred_proba = self._predict(X)
+        y_pred_proba = self.predict_proba(X)
         return metric.evaluate(y_true, y_pred_proba, classifier=self)
 
     def _train_iteration(self, X, y):
@@ -118,7 +116,8 @@ class ImportedClassifier(Classifier):
 
     def __init__(self, base, **kwargs):
         self.classifier = base()
-        self.intercept = False
+        self.kwargs = kwargs
+        self.stop_condition = None
 
     def fit(self, X, y):
         self.classifier.fit(X, y)
@@ -126,6 +125,9 @@ class ImportedClassifier(Classifier):
 
     def predict(self, X, threshold=0.5):
         return self.classifier.predict(X)
+
+    def predict_proba(self, X):
+        return self.classifier.predict_proba(X)
 
 
 class LDA(ImportedClassifier):
