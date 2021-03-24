@@ -118,6 +118,7 @@ class ImportedClassifier(Classifier):
 
     def __init__(self, base, **kwargs):
         self.classifier = base()
+        self.intercept = False
 
     def fit(self, X, y):
         self.classifier.fit(X, y)
