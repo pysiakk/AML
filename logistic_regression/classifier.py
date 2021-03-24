@@ -2,6 +2,9 @@ from logistic_regression.stopper import Stopper
 from logistic_regression.metric import Metric
 import numpy as np
 
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
+from sklearn.neighbors import KNeighborsClassifier
+
 
 class Classifier:
     def __init__(self, intercept=True, stop_condition=None, **kwargs):
@@ -108,3 +111,30 @@ class MiniBatchGD(GeneralGradientDescent):
     def __init__(self, **kwargs):
         super().__init__(batch_size=32, **kwargs)
 
+
+class ImportedClassifier(Classifier):
+
+    def __init__(self, base, **kwargs):
+        self.classifier = base()
+
+    def fit(self, X, y):
+        self.classifier.fit(X, y)
+        return self
+
+    def predict(self, X, threshold=0.5):
+        return self.classifier.predict(X)
+
+
+class LDA(ImportedClassifier):
+    def __init__(self, **kwargs):
+        super().__init__(LinearDiscriminantAnalysis)
+
+
+class QDA(ImportedClassifier):
+    def __init__(self, **kwargs):
+        super().__init__(QuadraticDiscriminantAnalysis)
+
+
+class KNN(ImportedClassifier):
+    def __init__(self, **kwargs):
+        super().__init__(KNeighborsClassifier)
