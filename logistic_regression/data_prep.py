@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 import numpy as np
 
 banknote = pd.read_csv("data/banknote.csv")
@@ -13,6 +13,8 @@ steel = pd.read_csv("data/steel.csv")
 def reg(X):
     mms = MinMaxScaler()
     X.iloc[:, :-1] = mms.fit_transform(X.iloc[:, :-1])
+    le = LabelEncoder()
+    X.iloc[:, -1] = le.fit_transform(X.iloc[:, -1])
     return X
 
 
