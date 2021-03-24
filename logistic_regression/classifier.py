@@ -114,8 +114,8 @@ class MiniBatchGD(GeneralGradientDescent):
 
 class ImportedClassifier(Classifier):
 
-    def __init__(self, base, **kwargs):
-        self.classifier = base()
+    def __init__(self, base, classifier_kwargs, **kwargs):
+        self.classifier = base(**classifier_kwargs)
         self.kwargs = kwargs
         self.stop_condition = None
 
@@ -132,14 +132,14 @@ class ImportedClassifier(Classifier):
 
 class LDA(ImportedClassifier):
     def __init__(self, **kwargs):
-        super().__init__(LinearDiscriminantAnalysis)
+        super().__init__(LinearDiscriminantAnalysis, {'solver': 'lsqr'})
 
 
 class QDA(ImportedClassifier):
     def __init__(self, **kwargs):
-        super().__init__(QuadraticDiscriminantAnalysis)
+        super().__init__(QuadraticDiscriminantAnalysis, {'reg_param': 0.001})
 
 
 class KNN(ImportedClassifier):
     def __init__(self, **kwargs):
-        super().__init__(KNeighborsClassifier)
+        super().__init__(KNeighborsClassifier, {})
