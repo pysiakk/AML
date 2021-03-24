@@ -127,7 +127,7 @@ class ImportedClassifier(Classifier):
         return self.classifier.predict(X)
 
     def predict_proba(self, X):
-        return self.classifier.predict_proba(X)
+        return self.classifier.predict_proba(X)[:, 1]
 
 
 class LDA(ImportedClassifier):
