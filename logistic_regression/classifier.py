@@ -64,7 +64,7 @@ class IRLS(Classifier):
 
     def _compute_derivative(self, X, y, p):
         W = np.diag([x*(1-x) + self.eps for x in p.reshape(-1)])
-        return np.linalg.inv(X.T @ W @ X) @ X.T @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
+        return np.linalg.pinv(X.T @ W @ X) @ X.T @ (y.reshape((-1, 1)) - p.reshape(-1, 1))
 
 
 class GeneralGradientDescent(Classifier):

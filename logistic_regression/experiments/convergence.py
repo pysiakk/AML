@@ -23,7 +23,7 @@ def gen_data(b0, b1, b2, n):
 def test_data(X, y, max_iter):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
 
-    irls = IRLS(max_iter=max_iter, eps=0.0001).fit(X_train, y_train)
+    irls = IRLS(max_iter=max_iter, eps=0).fit(X_train, y_train)
     print(f'IRLS accuracy: {irls.score(X_test, y_test, Metric.Acc)} and beta: {irls.beta}')
 
     gd = GD(max_iter=max_iter, learning_rate=0.01).fit(X_train, y_train)
