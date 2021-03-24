@@ -62,7 +62,7 @@ def r2(labels_true, pred_proba, classifier):
     model = classifier.__class__(intercept=False, stop_condition=classifier.stop_condition, **classifier.kwargs)
     model.fit(np.ones((len(labels_true), 1)), labels_true)
     y_pred_proba_null = model.predict_proba(np.ones((len(labels_true), 1)))
-    return 1 - log_likelihood(labels_true, pred_proba)/log_likelihood(labels_true, y_pred_proba_null)
+    return 1 - (log_likelihood(labels_true, pred_proba)/log_likelihood(labels_true, y_pred_proba_null))
 
 
 class Metric(Enum):
