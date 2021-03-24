@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
 banknote = pd.read_csv("data/banknote.csv")
@@ -9,7 +10,14 @@ ozone = pd.read_csv("data/ozone.csv")
 steel = pd.read_csv("data/steel.csv")
 
 
+def reg(X):
+    mms = MinMaxScaler()
+    X.iloc[:, :-1] = mms.fit_transform(X.iloc[:, :-1])
+    return X
+
+
 def drop_corr(X):
+    X = reg(X)
     df = pd.DataFrame(X)
     cor_matrix = df.corr().abs()
     upper_tri = cor_matrix.where(np.triu(np.ones(cor_matrix.shape),k=1).astype(np.bool))
