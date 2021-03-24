@@ -23,7 +23,6 @@ def recall_test(y_true, y_pred, rec):
 
 
 def f1score_test(y_true, y_pred, f1):
-    print(f1)
     assert f1score(y_true, y_pred) == f1
 
 
