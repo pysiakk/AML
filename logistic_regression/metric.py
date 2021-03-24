@@ -49,6 +49,8 @@ def f1score(labels_true, pred_proba, **kwargs):
 
 
 def log_likelihood(labels_true, pred_proba, **kwargs):
+    labels_true = labels_true.reshape((-1, 1))
+    pred_proba = pred_proba.reshape((-1, 1))
     return (np.log(pred_proba).T @ labels_true + np.log(1 - pred_proba).T @ (1 - labels_true))[0, 0]
 
 

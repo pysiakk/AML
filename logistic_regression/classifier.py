@@ -39,8 +39,10 @@ class Classifier:
         return y_pred
 
     def score(self, X, y_true, metric: Metric):
+        if self.intercept:
+            X = np.hstack((np.ones((X.shape[0], 1)), X))
         y_pred_proba = self._predict(X)
-        return metric.evaluate(y_true, y_pred_proba, self)
+        return metric.evaluate(y_true, y_pred_proba, classifier=self)
 
     def _train_iteration(self, X, y):
         p = self._predict(X)
