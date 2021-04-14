@@ -3,7 +3,7 @@ from aenum import Enum, extend_enum
 
 def worse_than_worst(classifier, max_iter_no_imp=5, imp_coef=0.0001, **kwargs):
     if len(classifier.log_likelihood) >= max_iter_no_imp:
-        return min(classifier.log_likelihood[-max_iter_no_imp:-1]) >= (1 + imp_coef) * classifier.log_likelihood[-1]
+        return min(classifier.log_likelihood[-max_iter_no_imp:-1]) >= (1 - imp_coef) * classifier.log_likelihood[-1]
     else:
         return False
 
